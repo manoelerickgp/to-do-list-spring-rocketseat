@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Data
-@Entity
+@Entity(name = "tb_users")
 public class UserModel {
 
     @Id
