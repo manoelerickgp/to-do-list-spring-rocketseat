@@ -3,12 +3,10 @@ package br.com.manoelerick.todolist.task;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -42,7 +40,12 @@ public class TaskController {
             // Se a data de inicio vier depois da minha data de término, será retornado um erro
             return ResponseEntity.status(400).body("A data de inicio deve ser anterior a data de término");
         }
-
         return ResponseEntity.status(200).body(this.taskRepository.save(taskModel));
+    }
+
+    @GetMapping(value = "/")
+    public List<TaskModel> list(HttpServletRequest request) {
+        var idUser = request.getAttribute("idUser");
+        return this.taskRepository.findByIdUser((UUID) idUser);
     }
 }
