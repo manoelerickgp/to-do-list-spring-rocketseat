@@ -25,7 +25,15 @@ public class FilterTaskAuth extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         var servletPath = request.getServletPath();
-        if (servletPath.equals("/tasks/")) {
+
+        /* O 'equals' do 'servletPath' diz que o caminho informado precisa ser igual a '/tasks/' para proseguir com
+        * a requisição, porém, por se tratar de uma atualização, é necessário informar o id do recurso a ser atualizado
+        * e por esta razão, o 'equals' não é apropriado para este tipo de operação. Para resolver este problema,
+        * o uso de 'startsWith' será o ideal, pois ele além de reconhecer paths com somente o '/tasks/' também irá
+        * reconhecer caminhos adicionais como por exemplo, um 'id' - http://localhost:8080/tasks/id*/
+
+        if (servletPath.startsWith("/tasks/")) {
+
             // etapa 1: Pegar a autenticação (usuário e senha)
             var authorization = request.getHeader("Authorization");
 
