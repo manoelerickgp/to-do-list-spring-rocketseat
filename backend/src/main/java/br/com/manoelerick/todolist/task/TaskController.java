@@ -1,5 +1,6 @@
 package br.com.manoelerick.todolist.task;
 
+import br.com.manoelerick.todolist.utils.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @RestController
@@ -49,11 +51,13 @@ public class TaskController {
         return this.taskRepository.findByIdUser((UUID) idUser);
     }
 
-    @PutMapping(value = "/{numero}")
-    public TaskModel update(@PathVariable UUID numero, @RequestBody TaskModel taskModel, HttpServletRequest request) {
-        var idUser = request.getAttribute("idUser");
-        taskModel.setIdUser((UUID) idUser);
-        taskModel.setId(numero);
-        return this.taskRepository.save(taskModel);
+    @PutMapping(value = "/{id}")
+    public TaskModel update(@PathVariable UUID id, @RequestBody TaskModel taskModel, HttpServletRequest request) {
+
+        var task = this.taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Task Not Found"));
+
+        Utils.copyNonNullProperties(taskModel, task);
+
+        return this.taskRepository.save(task);
     }
 }
